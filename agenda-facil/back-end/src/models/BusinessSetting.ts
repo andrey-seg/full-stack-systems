@@ -1,21 +1,35 @@
 import { ScheduleConfig, timeToMinutes } from "../common/TimeSlots";
+import { isValidTime } from 
 import { IBusinessSettingsDto } from "../interfaces/IBusinessSettingsDto";
+
+const ALLOWED_DURATION: readonly number[] = [15, 30, 45, 60];
+const FIRST_WEEK_DAY = 0; //domingo
+const LAST_WEEK_DAY = 6; //sabado
 
 export class BusinessSetting{
     
-    private __openingTime: string;
-    private __closingTime: string;
-    private __slotDurationMinutes: number;
-    private __workingDays: number[];
-    private __updatedAt: string;
+    private readonly __openingTime: string;
+    private readonly __closingTime: string;
+    private readonly __slotDurationMinutes: number;
+    private readonly __workingDays: readonly number[];
+    private readonly __updatedAt: string;
 
     constructor(openingTime: string, closingTime: string, slotDurationMinutes: number, workingDays: number[]){
+
+        BusinessSetting.validateTimes()
 
         this.__openingTime = openingTime;
         this.__closingTime = closingTime;
         this.__slotDurationMinutes = slotDurationMinutes;
         this.__workingDays = workingDays;
         this.__updatedAt = new Date().toISOString();
+    }
+
+    private static validateTimes(openingTime: unknown, closingTime: unknown): void{
+
+        if(typeof openingTime!== "string" || !isValidTime(openingTime)){
+
+        }
     }
 
     toConfig(): ScheduleConfig{
