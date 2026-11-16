@@ -1,4 +1,4 @@
-export interface IBusinessSettings{
+export interface IBusinessSettingsDto{
 
     openingTime: string;
     closingTime: string;
