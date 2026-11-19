@@ -1,7 +1,6 @@
 import { ScheduleConfig, timeToMinutes } from "../common/TimeSlots";
 import { IsValidTime } from "../common/IsValidTime";
 import { IBusinessSettingsDto } from "../interfaces/IBusinessSettingsDto";
-import { IsValidEmail } from "../common/IsValidEmail";
 
 const ALLOWED_DURATION: readonly number[] = [15, 30, 45, 60];
 const FIRST_WEEK_DAY = 0; //domingo
@@ -12,7 +11,7 @@ export class BusinessSetting{
     private readonly __openingTime: string;
     private readonly __closingTime: string;
     private readonly __slotDurationMinutes: number;
-    private readonly __workingDays: number[];
+    private readonly __workingDays: readonly number[];
     private readonly __updatedAt: string;
 
     constructor(openingTime: string, closingTime: string, slotDurationMinutes: number, workingDays: number[]){
@@ -24,18 +23,18 @@ export class BusinessSetting{
         this.__openingTime = openingTime;
         this.__closingTime = closingTime;
         this.__slotDurationMinutes = slotDurationMinutes;
-        this.__workingDays = workingDays;
+        this.__workingDays = [...workingDays];
         this.__updatedAt = new Date().toISOString();
     }
 
     private static validateTimes(openingTime: unknown, closingTime: unknown): void{
 
-        if(typeof openingTime!== "string" || !IsValidTime(openingTime)){
+        if(typeof openingTime !== "string" || !IsValidTime(openingTime)){
             throw new Error(`Opening time must be a valid time in "HH:MM" format`);
         }
 
-        if(typeof closingTime !== "string" || IsValidTime(closingTime)){
-            throw new Error(`Opening time must be a valid time in "HH:MM" format`);
+        if(typeof closingTime !== "string" || !IsValidTime(closingTime)){
+            throw new Error(`Closing time must be a valid time in "HH:MM" format`);
         }
 
         if(timeToMinutes(openingTime) >= timeToMinutes(closingTime)){
@@ -85,7 +84,7 @@ export class BusinessSetting{
             openingTime: this.__openingTime,
             closingTime: this.__closingTime,
             slotDurationMinutes: this.__slotDurationMinutes,
-            workingDays: this.__workingDays
+            workingDays: [...this.__workingDays]
         }
     }
 
@@ -95,7 +94,7 @@ export class BusinessSetting{
             openingTime: this.__openingTime,
             closingTime: this.__closingTime,
             slotDurationMinutes: this.__slotDurationMinutes,
-            workingDays: this.__workingDays,
+            workingDays: [...this.__workingDays],
             updatedAt: this.__updatedAt
         }
     }
@@ -108,15 +107,15 @@ export class BusinessSetting{
         return this.__closingTime;
     }
 
-    getSlotDurationTime(): number{
+    getSlotDurationMinutes(): number{
         return this.__slotDurationMinutes;
     }
 
     getWorkingDays(): number[]{
-        return this.__workingDays;
+        return [...this.__workingDays];
     }
 
-    getUpdateAt(): string{
+    getUpdatedAt(): string{
         return this.__updatedAt;
     }
 }
